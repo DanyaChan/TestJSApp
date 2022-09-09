@@ -1,0 +1,11 @@
+#total_score_title {
+    position: absolute;
+    font-family: Arial, Helvetica, sans-serif;
+    top: 940px
+}
+
+#max_total_title {
+    position: absolute;
+    font-family: Arial, Helvetica, sans-serif;
+    top: 1000px
+}

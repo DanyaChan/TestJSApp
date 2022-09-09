@@ -41,13 +41,14 @@ function getHTMLTile (x, y, n) {
     if (div === null) {
         div = document.createElement('div');
         div.id = getId(x, y);
+        div.style.position = 'absolute';
+        div.className = 'tile';
+        div.style.height = getPx(size);
+        div.style.width = getPx(size);
     }
     div.style.top = getPx(y);
     div.style.left = getPx(x);
-    div.style.height = getPx(size);
-    div.style.width = getPx(size);
-    div.style.position = 'absolute';
-    div.className = 'tile';
+    
 
     const ps = div.getElementsByTagName('p');
     let p;
@@ -77,8 +78,8 @@ function getHTMLTile (x, y, n) {
 
 function clearTiles () {
     const divs = document.getElementsByClassName('tile');
-    for (const e of divs) {
-        e.remove();
+    for (var i = (divs.length - 1) ; i >= 0; i--) {
+        divs[i].remove();
     }
 }
 
@@ -249,12 +250,42 @@ function getFieldSize () {
     };
 }
 
+function getTotal(tiles) {
+    let total = 0;
+    for (const y in tiles) {
+        for (const x in tiles[y]) {
+            if (tiles[y][x] !== null) {
+                total += tiles[y][x];
+            }
+        }
+    }
+    return total;
+}
+
+function getMaxTotal(total_score, max_total) {
+    if (total_score > max_total) return total_score;
+    return max_total;
+}
+
+function setTotal(total) {
+    const total_h1 = document.getElementById('total_score_title');
+    total_h1.innerHTML = 'Total score: ' + total;
+}
+
+function setMaxTotal(max_total) {
+    const total_h1 = document.getElementById('max_total_title');
+    total_h1.innerHTML = 'Max total score: ' + max_total;
+}
+
 function main () {
     let sz = getFieldSize();
 
     let tiles = getEmptyArray(sz.x, sz.y);
 
     const allowed_keys = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'm'];
+    
+    let total_score = 0;
+    let max_total = 0;
 
     renderTiles(tiles);
 
@@ -271,6 +302,7 @@ function main () {
             }
 
             if (getFreeSpace(tiles) === 0) {
+                clearTiles();
                 alert('You lost');
                 sz = getFieldSize();
                 console.log(sz);
@@ -279,7 +311,10 @@ function main () {
 
             insertInRandom(tiles);
             renderTiles(tiles);
-            clearTiles();
+            total_score = getTotal(tiles);
+            setTotal(total_score);
+            max_total = getMaxTotal(total_score, max_total);
+            setMaxTotal(max_total);
         }
     });
 }
